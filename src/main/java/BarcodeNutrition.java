@@ -6,37 +6,38 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
+import java.util.TreeMap;
 
-public class BarcodeNutrition {
-    // Unit conversion
-    private static Map<String, Integer> unitConversions = Map.of("g", 1, "mg", 1000, "mcg", 1000000);
-
-    // Nutrition data
-    private String servingSize;
-    private double calories;
-    private double fat;
-    private double carbohydrates;
-    private double fiber;
-    private double protein;
-    private double sodium;
-
+public class BarcodeNutrition extends Nutrition {
     public BarcodeNutrition(String barcode) throws IOException {
+        info = new TreeMap<>();
+
         String page = getPage(getURL(barcode));
         JSONObject product = new JSONObject(page).getJSONObject("product");
 
         servingSize = product.getString("serving_size");
 
-        JSONObject nutriments = product.getJSONObject("nutriments");
-        calories = nutriments.getDouble("energy-kcal_serving");
+        // BarcodeField -> Field
+        Map<String, String> fieldMap = new TreeMap<>();
+        for (String field : fields.split("\\|")) {
+            String barcodeField = field.replace("calories", "energy-kcal")
+                    .replace("protein", "proteins")
+                    .replace("total ", "")
+                    .replace("carbohydrate", "carbohydrates")
+                    .replace("dietary ", "");
+            fieldMap.put(barcodeField, field);
+        }
 
-        fat = getStandardField(nutriments, "fat");
-        carbohydrates = getStandardField(nutriments, "carbohydrates");
-        fiber = getStandardField(nutriments, "fiber");
-        protein = getStandardField(nutriments, "proteins");
-        sodium = getStandardField(nutriments, "sodium");
+        JSONObject nutriments = product.getJSONObject("nutriments");
+
+        for (Map.Entry<String, String> entry : fieldMap.entrySet()) {
+            double value = getStandardField(nutriments, entry.getKey());
+
+            info.put(entry.getValue(), value);
+        }
     }
 
-    private static double getStandardField(JSONObject nutrients, String field) {
+    private double getStandardField(JSONObject nutrients, String field) {
         double value = nutrients.getDouble(field + "_serving");
         value /= unitConversions.get(nutrients.getString(field + "_unit"));
 
@@ -62,46 +63,5 @@ public class BarcodeNutrition {
         connection.disconnect();
 
         return builder.toString();
-    }
-
-    @Override
-    public String toString() {
-        return "BarcodeNutrition{" +
-                "servingSize='" + servingSize + '\'' +
-                ", calories=" + calories +
-                ", fat=" + fat +
-                ", carbohydrates=" + carbohydrates +
-                ", fiber=" + fiber +
-                ", protein=" + protein +
-                ", sodium=" + sodium +
-                '}';
-    }
-
-    public double getCalories() {
-        return calories;
-    }
-
-    public double getCarbohydrates() {
-        return carbohydrates;
-    }
-
-    public double getFat() {
-        return fat;
-    }
-
-    public double getFiber() {
-        return fiber;
-    }
-
-    public double getProtein() {
-        return protein;
-    }
-
-    public double getSodium() {
-        return sodium;
-    }
-
-    public String getServingSize() {
-        return servingSize;
     }
 }
