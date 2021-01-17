@@ -17,6 +17,10 @@ public abstract class Nutrition {
                 '}';
     }
 
+    public String getFields() {
+        return fields;
+    }
+
     public boolean hasField(String fieldName) {
         return info.containsKey(fieldName);
     }

@@ -12,6 +12,7 @@ public class BarcodeNutrition extends Nutrition {
     public BarcodeNutrition(String barcode) throws IOException {
         info = new TreeMap<>();
 
+        // Get JSONObject from api
         String page = getPage(getURL(barcode));
         JSONObject product = new JSONObject(page).getJSONObject("product");
 
@@ -30,6 +31,7 @@ public class BarcodeNutrition extends Nutrition {
 
         JSONObject nutriments = product.getJSONObject("nutriments");
 
+        // Get each field and put into map
         for (Map.Entry<String, String> entry : fieldMap.entrySet()) {
             double value = getStandardField(nutriments, entry.getKey());
 

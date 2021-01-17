@@ -33,13 +33,12 @@ public class Main {
 
         List<List<String>> strings = Arrays.stream(dataDirectory.listFiles()).map(Main::readFile).collect(Collectors.toList());
         strings.stream().map(TextNutrition::new).forEach(System.out::println);
+        System.out.println();
 
-        /*
         // Barcode test
         String[] barcodes = {"044000072742", "073141152334", "024100106851"};
         for (String barcode : barcodes) {
             System.out.println(new BarcodeNutrition(barcode));
         }
-         */
     }
 }

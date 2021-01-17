@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -18,7 +17,7 @@ public class TextNutrition extends Nutrition {
     }
 
     private boolean putCaloriesIfNum(String line) {
-        if (line.matches("^(\\d|\\.)+$")) {
+        if (line.trim().matches("^(\\d|\\.)+$")) {
             info.put("calories", Double.parseDouble(line));
             return true;
         }
