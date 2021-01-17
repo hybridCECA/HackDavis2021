@@ -41,14 +41,14 @@ public class TextNutrition extends Nutrition {
                         if (putCaloriesIfNum(lines.get(i - j))) {
                             break;
                         }
-                    } catch (IndexOutOfBoundsException e) {
+                    } catch (ArrayIndexOutOfBoundsException e) {
                         numExceptions++;
                     }
                     try {
                         if (putCaloriesIfNum(lines.get(i + j))) {
                             break;
                         }
-                    } catch (IndexOutOfBoundsException e) {
+                    } catch (ArrayIndexOutOfBoundsException e) {
                         numExceptions++;
                     }
                 }
