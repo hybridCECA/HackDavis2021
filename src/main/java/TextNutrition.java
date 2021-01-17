@@ -59,7 +59,7 @@ public class TextNutrition extends Nutrition {
         // Search for other fields
         for (String line : lines) {
             // If is the serving size
-            if (line.toLowerCase().startsWith("serving size")) {
+            if (line.trim().toLowerCase().startsWith("serving size")) {
                 servingSize = line.replaceAll("(?i)serving size(?-i)\\s*", "");
                 continue;
             }
