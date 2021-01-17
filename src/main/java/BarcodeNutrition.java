@@ -20,24 +20,20 @@ public class BarcodeNutrition {
     private double protein;
     private double sodium;
 
-    public BarcodeNutrition(String barcode) {
-        try {
-            String result = getPage(getURL(barcode));
-            JSONObject product = new JSONObject(result).getJSONObject("product");
+    public BarcodeNutrition(String barcode) throws IOException {
+        String page = getPage(getURL(barcode));
+        JSONObject product = new JSONObject(page).getJSONObject("product");
 
-            servingSize = product.getString("serving_size");
+        servingSize = product.getString("serving_size");
 
-            JSONObject nutriments = product.getJSONObject("nutriments");
-            calories = nutriments.getDouble("energy-kcal_serving");
+        JSONObject nutriments = product.getJSONObject("nutriments");
+        calories = nutriments.getDouble("energy-kcal_serving");
 
-            fat = getStandardField(nutriments, "fat");
-            carbohydrates = getStandardField(nutriments, "carbohydrates");
-            fiber = getStandardField(nutriments, "fiber");
-            protein = getStandardField(nutriments, "proteins");
-            sodium = getStandardField(nutriments, "sodium");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        fat = getStandardField(nutriments, "fat");
+        carbohydrates = getStandardField(nutriments, "carbohydrates");
+        fiber = getStandardField(nutriments, "fiber");
+        protein = getStandardField(nutriments, "proteins");
+        sodium = getStandardField(nutriments, "sodium");
     }
 
     private static double getStandardField(JSONObject nutrients, String field) {
