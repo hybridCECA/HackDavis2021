@@ -1,10 +1,10 @@
+import com.example.health360_tools.Nutrition;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,15 +15,12 @@ public class BarcodeNutrition2 extends Nutrition {
 
         servingSize = getJSONField(page, "serving_size");
 
-        calories = Double.parseDouble(getJSONField(page, "energy-kcal_serving"));
-
+        calories = getStandardField(page, "energy-kcal");
         fat = getStandardField(page, "fat");
         carbohydrates = getStandardField(page, "carbohydrates");
         fiber = getStandardField(page, "fiber");
         protein = getStandardField(page, "proteins");
         sodium = getStandardField(page, "sodium");
-
-
     }
 
     private String getJSONField(String json, String field) {

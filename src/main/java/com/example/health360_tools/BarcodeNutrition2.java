@@ -15,15 +15,12 @@ public class BarcodeNutrition2 extends Nutrition {
 
         servingSize = getJSONField(page, "serving_size");
 
-        calories = Double.parseDouble(getJSONField(page, "energy-kcal_serving"));
-
+        calories = getStandardField(page, "energy-kcal");
         fat = getStandardField(page, "fat");
         carbohydrates = getStandardField(page, "carbohydrates");
         fiber = getStandardField(page, "fiber");
         protein = getStandardField(page, "proteins");
         sodium = getStandardField(page, "sodium");
-
-
     }
 
     private String getJSONField(String json, String field) {
