@@ -10,6 +10,13 @@ public class TextNutrition extends Nutrition {
     private static final String UNITS_GROUP = "units";
     private static final Pattern pattern = Pattern.compile("^(?<" + FIELD_GROUP + ">[a-zA-Z\\s]+)(?<" + VALUE_GROUP + ">(\\d|\\.)+|O)(?<" + UNITS_GROUP + ">(m|mc)*?([g9]))");
 
+    private boolean fuzzyEquals(String s1, String s2) {
+        String s1c = s1.toLowerCase();
+        String s2c = s2.toLowerCase();
+
+        return s1c.contains(s2c) || s2c.contains(s1c);
+    }
+
     private boolean putCaloriesIfNum(String line) {
         if (line.matches("^(\\d|\\.)+$")) {
             info.put("calories", Double.parseDouble(line));
@@ -27,24 +34,23 @@ public class TextNutrition extends Nutrition {
         // Search for calories
         for (int i = 0; i < lines.size(); i++) {
             // String found, search for num in both directions
-            if (lines.get(i).trim().toLowerCase().contains("calories")) {
-                for (int j = 1; ; j++) {
-                    boolean firstException = false;
+            if (fuzzyEquals(lines.get(i), "calories")) {
+                int numExceptions = 0;
+                for (int j = 1; numExceptions < 2; j++) {
+                    numExceptions = 0;
                     try {
                         if (putCaloriesIfNum(lines.get(i - j))) {
                             break;
                         }
                     } catch (IndexOutOfBoundsException e) {
-                        firstException = true;
+                        numExceptions++;
                     }
                     try {
                         if (putCaloriesIfNum(lines.get(i + j))) {
                             break;
                         }
                     } catch (IndexOutOfBoundsException e) {
-                        if (firstException) {
-                            break;
-                        }
+                        numExceptions++;
                     }
                 }
                 break;
@@ -53,6 +59,7 @@ public class TextNutrition extends Nutrition {
 
         // Search for other fields
         for (String line : lines) {
+            // If is the serving size
             if (line.toLowerCase().startsWith("serving size")) {
                 servingSize = line.replaceAll("(?i)serving size(?-i)\\s*", "");
                 continue;
@@ -61,20 +68,18 @@ public class TextNutrition extends Nutrition {
             Matcher matcher = pattern.matcher(line);
 
             if (matcher.find()) {
-                String valueString = matcher.group(VALUE_GROUP);
-                double value = (valueString.equalsIgnoreCase("O")) ? 0 : Double.parseDouble(matcher.group(VALUE_GROUP));
+                // Replace 9 with g
+                String units = matcher.group(UNITS_GROUP).replaceAll("9$", "g");
 
-                String units = matcher.group(UNITS_GROUP);
-                if (units.endsWith("9")) {
-                    units = units.replaceAll("9$", "g");
-                }
-
+                // Replace O with 0
+                String valueString = matcher.group(VALUE_GROUP).replaceAll("O", "0");
+                double value = Double.parseDouble(valueString);
                 value /= unitConversions.get(units);
 
+                // Match field
                 String parsedField = matcher.group(FIELD_GROUP).trim().toLowerCase();
-
                 for (String field : fieldArray) {
-                    if (parsedField.equals(field)) {
+                    if (fuzzyEquals(parsedField, field)) {
                         info.put(field, value);
                         break;
                     }
