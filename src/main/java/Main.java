@@ -38,7 +38,6 @@ public class Main {
         // Barcode test
         String[] barcodes = {"044000072742", "073141152334", "024100106851"};
         for (String barcode : barcodes) {
-            System.out.println(new BarcodeNutrition(barcode));
             System.out.println(new BarcodeNutrition2(barcode));
         }
     }

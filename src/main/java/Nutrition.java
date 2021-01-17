@@ -1,32 +1,59 @@
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Nutrition {
     // Unit conversion
-    protected static Map<String, Integer> unitConversions = Map.of("g", 1, "mg", 1000, "mcg", 1000000, "kcal", 1);
+    protected static Map<String, Integer> unitConversions = new HashMap<String, Integer>() {{
+        put("g", 1);
+        put("kcal", 1);
+        put("mg", 1000);
+        put("mcg", 1000000);
+    }};
 
-    protected static String fields = "calories|total fat|total carbohydrate|dietary fiber|protein|sodium";
+    protected double calories;
+    protected double fat;
+    protected double carbohydrates;
+    protected double fiber;
+    protected double protein;
+    protected double sodium;
 
     protected String servingSize;
-    protected Map<String, Double> info;
 
     @Override
     public String toString() {
         return "Nutrition{" +
-                "servingSize='" + servingSize + '\'' +
-                ", info=" + info +
+                "calories=" + calories +
+                ", fat=" + fat +
+                ", carbohydrates=" + carbohydrates +
+                ", fiber=" + fiber +
+                ", protein=" + protein +
+                ", sodium=" + sodium +
+                ", servingSize='" + servingSize + '\'' +
                 '}';
     }
 
-    public String getFields() {
-        return fields;
+    public double getSodium() {
+        return sodium;
     }
 
-    public boolean hasField(String fieldName) {
-        return info.containsKey(fieldName);
+    public double getProtein() {
+        return protein;
     }
 
-    public Double getField(String fieldName) {
-        return info.get(fieldName);
+    public double getFiber() {
+        return fiber;
+    }
+
+    public double getFat() {
+        return fat;
+    }
+
+    public double getCarbohydrates() {
+        return carbohydrates;
+    }
+
+    public double getCalories() {
+        return calories;
     }
 
     public String getServingSize() {

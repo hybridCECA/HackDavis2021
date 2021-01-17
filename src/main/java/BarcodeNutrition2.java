@@ -10,30 +10,20 @@ import java.util.regex.Pattern;
 
 public class BarcodeNutrition2 extends Nutrition {
     public BarcodeNutrition2(String barcode) throws IOException {
-        info = new TreeMap<>();
-
         // Get JSONObject from api
         String page = getPage(getURL(barcode));
 
         servingSize = getJSONField(page, "serving_size");
 
-        // BarcodeField -> Field
-        Map<String, String> fieldMap = new TreeMap<>();
-        for (String field : fields.split("\\|")) {
-            String barcodeField = field.replace("calories", "energy-kcal")
-                    .replace("protein", "proteins")
-                    .replace("total ", "")
-                    .replace("carbohydrate", "carbohydrates")
-                    .replace("dietary ", "");
-            fieldMap.put(barcodeField, field);
-        }
+        calories = Double.parseDouble(getJSONField(page, "energy-kcal_serving"));
 
-        // Get each field and put into map
-        for (Map.Entry<String, String> entry : fieldMap.entrySet()) {
-            double value = getStandardField(page, entry.getKey());
+        fat = getStandardField(page, "fat");
+        carbohydrates = getStandardField(page, "carbohydrates");
+        fiber = getStandardField(page, "fiber");
+        protein = getStandardField(page, "proteins");
+        sodium = getStandardField(page, "sodium");
 
-            info.put(entry.getValue(), value);
-        }
+
     }
 
     private String getJSONField(String json, String field) {
