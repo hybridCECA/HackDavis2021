@@ -25,27 +25,27 @@ public class TextNutrition extends Nutrition {
         return false;
     }
 
-    public TextNutrition(List<String> lines) {
+    public TextNutrition(String[] lines) {
         info = new TreeMap<>();
 
         String[] fieldArray = fields.split("\\|");
 
         // Search for calories
-        for (int i = 0; i < lines.size(); i++) {
+        for (int i = 0; i < lines.length; i++) {
             // String found, search for num in both directions
-            if (fuzzyEquals(lines.get(i), "calories")) {
+            if (fuzzyEquals(lines[i], "calories")) {
                 int numExceptions = 0;
                 for (int j = 1; numExceptions < 2; j++) {
                     numExceptions = 0;
                     try {
-                        if (putCaloriesIfNum(lines.get(i - j))) {
+                        if (putCaloriesIfNum(lines[i - j])) {
                             break;
                         }
                     } catch (ArrayIndexOutOfBoundsException e) {
                         numExceptions++;
                     }
                     try {
-                        if (putCaloriesIfNum(lines.get(i + j))) {
+                        if (putCaloriesIfNum(lines[i + j])) {
                             break;
                         }
                     } catch (ArrayIndexOutOfBoundsException e) {

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Main {
-    private static List<String> readFile(File file) {
+    private static String[] readFile(File file) {
         List<String> output = new ArrayList<>();
 
         try {
@@ -24,14 +24,14 @@ public class Main {
             e.printStackTrace();
         }
 
-        return output;
+        return output.toArray(new String[0]);
     }
 
     public static void main(String[] args) throws IOException {
         // Info parsing
         File dataDirectory = new File("./data");
 
-        List<List<String>> strings = Arrays.stream(dataDirectory.listFiles()).map(Main::readFile).collect(Collectors.toList());
+        List<String[]> strings = Arrays.stream(dataDirectory.listFiles()).map(Main::readFile).collect(Collectors.toList());
         strings.stream().map(TextNutrition::new).forEach(System.out::println);
         System.out.println();
 
